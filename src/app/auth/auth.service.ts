@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import{ HttpClient, HttpErrorResponse } from "@angular/common/http"
 import { catchError, tap } from "rxjs/operators";
-import { throwError, Subject } from "rxjs" ;
+import { throwError, Subject, BehaviorSubject } from "rxjs" ;
 import { User } from "./user.model";
 
 
@@ -21,7 +21,11 @@ export interface AuthResponseData{
 export class AuthService {
 
     //store authenticated user as subject. A Subject is like an Observable, but can multicast to many Observers. Subjects are like EventEmitters: they maintain a registry of many listeners. 
-    userSubject = new Subject<User>(); // this will inform all place in the application about when our user changes. It will always change when the authentication state changes, even if the token expires the user subject a new value which is null, it tells that the user is invalid
+    // this will inform all place in the application about when our user changes. It will always change when the authentication state changes, even if the token expires the user subject a new value which is null, it tells that the user is invalid
+    // userSubject = new Subject<User>(); 
+
+    userSubject = new BehaviorSubject<User>(null);
+    // The difference of BehaviorSubject is that it gives subscribers immediate access to the perviously emitted value even if they haven't subscribed at the point of time that value was emitted. That means we can get access to the currently activated user even if we only subscribe after that user has been emitted. So when we need token to fetch data, even the user logged in before that point of time, we still get the access to the latest user.
 
     constructor(private http: HttpClient){}
 
