@@ -20,8 +20,8 @@ export interface AuthResponseData{
 
 export class AuthService {
 
-    //store authenticated user as subject. A Subject is like an Observable, but can multicast to many Observers. Subjects are like EventEmitters: they maintain a registry of many listeners.
-    userSubject = new Subject<User>();
+    //store authenticated user as subject. A Subject is like an Observable, but can multicast to many Observers. Subjects are like EventEmitters: they maintain a registry of many listeners. 
+    userSubject = new Subject<User>(); // this will inform all place in the application about when our user changes. It will always change when the authentication state changes, even if the token expires the user subject a new value which is null, it tells that the user is invalid
 
     constructor(private http: HttpClient){}
 
