@@ -4,6 +4,7 @@ import { catchError, tap } from "rxjs/operators";
 import { throwError, Subject, BehaviorSubject } from "rxjs" ;
 import { User } from "./user.model";
 import { Router } from '@angular/router';
+import { ignoreElements } from "rxjs-compat/operator/ignoreElements";
 
 
 export interface AuthResponseData{
@@ -27,6 +28,8 @@ export class AuthService {
 
     userSubject = new BehaviorSubject<User>(null);
     // The difference of BehaviorSubject is that it gives subscribers immediate access to the perviously emitted value even if they haven't subscribed at the point of time that value was emitted. That means we can get access to the currently activated user even if we only subscribe after that user has been emitted. So when we need token to fetch data, even the user logged in before that point of time, we still get the access to the latest user.
+
+    private tokenExpirationTimer: any;
 
     constructor(private http: HttpClient, private router: Router){}
 
@@ -70,6 +73,8 @@ export class AuthService {
        const loadedUser = new User(userData.email, userData.id, userData._token, new Date(userData._tokenExpirationDate));
        if(loadedUser.token){
            this.userSubject.next(loadedUser)
+           const expirationDuration = new Date(userData._tokenExpirationDate).getTime() - new Date().getTime() 
+           this.autoLogout(expirationDuration)
        }
 
     }
@@ -77,9 +82,18 @@ export class AuthService {
     logout(){
         this.userSubject.next(null);
         this.router.navigate(['/auth'])
-
+        localStorage.removeItem('userData')
+        if(this.tokenExpirationTimer){
+            clearTimeout(this.tokenExpirationTimer);
+        }
+        this.tokenExpirationTimer = null;
     }
 
+    autoLogout(expirationDuration: number){
+        this.tokenExpirationTimer = setTimeout(()=>{
+            this.logout();
+        }, expirationDuration);
+    }
 
     private handleAuthentication(email: string, token:string, userId: string, expiresIn: number){
 
@@ -93,11 +107,11 @@ export class AuthService {
             );
             // use the user subject to next the user, to emit the constructed user as our curently logged in user
             this.userSubject.next(user);
+            this.autoLogout(expiresIn * 1000)
             // to store the user object as string in local storage for auto login when refresh the page
             localStorage.setItem('userData', JSON.stringify(user));
     
     }
-
 
     private handleError(errorRes: HttpErrorResponse) {
         let errorMessage = 'An unknown error occurred';
