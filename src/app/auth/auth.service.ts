@@ -56,6 +56,24 @@ export class AuthService {
         }))
     }
 
+    autoLogin(){
+        // take the string form and convert it back to Javascript object
+       const userData: {
+           email:string;
+           id: string;
+           _token: string;
+           _tokenExpirationDate: string;
+       } = JSON.parse(localStorage.getItem('userData'));
+       if(!userData){
+           return;
+       } 
+       const loadedUser = new User(userData.email, userData.id, userData._token, new Date(userData._tokenExpirationDate));
+       if(loadedUser.token){
+           this.userSubject.next(loadedUser)
+       }
+
+    }
+
     logout(){
         this.userSubject.next(null);
         this.router.navigate(['/auth'])
@@ -75,6 +93,8 @@ export class AuthService {
             );
             // use the user subject to next the user, to emit the constructed user as our curently logged in user
             this.userSubject.next(user);
+            // to store the user object as string in local storage for auto login when refresh the page
+            localStorage.setItem('userData', JSON.stringify(user));
     
     }
 
