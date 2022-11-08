@@ -3,6 +3,7 @@ import{ HttpClient, HttpErrorResponse } from "@angular/common/http"
 import { catchError, tap } from "rxjs/operators";
 import { throwError, Subject, BehaviorSubject } from "rxjs" ;
 import { User } from "./user.model";
+import { Router } from '@angular/router';
 
 
 export interface AuthResponseData{
@@ -27,7 +28,7 @@ export class AuthService {
     userSubject = new BehaviorSubject<User>(null);
     // The difference of BehaviorSubject is that it gives subscribers immediate access to the perviously emitted value even if they haven't subscribed at the point of time that value was emitted. That means we can get access to the currently activated user even if we only subscribe after that user has been emitted. So when we need token to fetch data, even the user logged in before that point of time, we still get the access to the latest user.
 
-    constructor(private http: HttpClient){}
+    constructor(private http: HttpClient, private router: Router){}
 
     signup(email:string, password: string){
         return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBz91hzQftaBmDTj-6Smvk51_-U9BZ8hdY', 
@@ -53,6 +54,12 @@ export class AuthService {
         .pipe(catchError(this.handleError), tap(resData => {
             this.handleAuthentication(resData.email, resData.idToken, resData.localId, +resData.expiresIn); // + to convert expiresIn to a number
         }))
+    }
+
+    logout(){
+        this.userSubject.next(null);
+        this.router.navigate(['/auth'])
+
     }
 
 
