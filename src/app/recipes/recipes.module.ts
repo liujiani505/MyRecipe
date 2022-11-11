@@ -1,7 +1,7 @@
-import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
+import { SharedModule } from "../shared/shared.module";
 import { RecipeDetailComponent } from "./recipe-detail/recipe-detail.component";
 import { RecipeEditComponent } from "./recipe-edit/recipe-edit.component";
 import { RecipeItemComponent } from "./recipe-list/recipe-item/recipe-item.component";
@@ -19,7 +19,7 @@ import { RecipesComponent } from "./recipes.component";
         RecipeStartComponent,
         RecipeEditComponent,
     ],
-    imports: [RouterModule, CommonModule, ReactiveFormsModule, RecipesRoutingModule],      // we have to import these because we're not getting them from app module automatically. Services are different, they only need to be set up once in app module, and you can access them in your whole application even in components which you added to feature modules. 
+    imports: [RouterModule, ReactiveFormsModule, RecipesRoutingModule, SharedModule],    // we have to import these because we're not getting them from app module automatically. Services are different, they only need to be set up once in app module, and you can access them in your whole application even in components which you added to feature modules. 
     // exports:[
     //     RecipesComponent,
     //     RecipeListComponent,
