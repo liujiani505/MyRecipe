@@ -27,7 +27,6 @@ import { RecipesModule } from './recipes/recipes.module';
     AuthComponent,
     LoadingSpinnerComponent,
     AlertComponent,
-    AlertComponent,
     PlaceholderDirective
   ],
   imports: [
@@ -41,4 +40,6 @@ import { RecipesModule } from './recipes/recipes.module';
   providers: [ShoppingListService, RecipeService, {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}],
   bootstrap: [AppComponent]
 })
+
+
 export class AppModule { }
