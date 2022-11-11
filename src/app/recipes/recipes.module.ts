@@ -20,14 +20,15 @@ import { RecipesComponent } from "./recipes.component";
         RecipeEditComponent,
     ],
     imports: [RouterModule, CommonModule, ReactiveFormsModule, RecipesRoutingModule],      // we have to import these because we're not getting them from app module automatically. Services are different, they only need to be set up once in app module, and you can access them in your whole application even in components which you added to feature modules. 
-    exports:[
-        RecipesComponent,
-        RecipeListComponent,
-        RecipeDetailComponent,
-        RecipeItemComponent,
-        RecipeStartComponent,
-        RecipeEditComponent,
-    ]
+    // exports:[
+    //     RecipesComponent,
+    //     RecipeListComponent,
+    //     RecipeDetailComponent,
+    //     RecipeItemComponent,
+    //     RecipeStartComponent,
+    //     RecipeEditComponent,
+    // ]
+    // don't need to export these components anymore because we created recipes-routing module and we're only using these components internally in recipes module.
 })
 
 export class RecipesModule {}
