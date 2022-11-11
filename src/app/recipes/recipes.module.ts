@@ -28,7 +28,7 @@ import { RecipesComponent } from "./recipes.component";
     //     RecipeStartComponent,
     //     RecipeEditComponent,
     // ]
-    // don't need to export these components anymore because we created recipes-routing module and we're only using these components internally in recipes module.
+    // don't need to export these components anymore because we created and imported recipes-routing module and we're only using these components internally in recipes module.
 })
 
 export class RecipesModule {}
