@@ -17,6 +17,8 @@ export function shoppingListReducer (state= initialState, action: ShoppingListAc
             return {
                 ...state,   // best practice to copy the old state to prevent from losing the untouched old properties. 
                 ingredients: [...state.ingredients, action.payload]
-            }
+            };
+        default:
+            return state;
     }
 }
