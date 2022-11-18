@@ -3,7 +3,7 @@ import { Ingredient } from 'src/app/shared/ingredient.model';
 
 
 export const ADD_INGREDIENT = 'ADD_INGREDIENT';
-
+export const ADD_INGREDIENTS = 'ADD_INGREDIENTS'
 
 // Action is an interface
 export class AddIngredient implements Action {
@@ -12,3 +12,11 @@ export class AddIngredient implements Action {
     // instead of adding payload as a property, we can add a constructor function where we accept a payload argument so in shopping list edit component, we can pass newingredient as an argument to dispatch an action.
     constructor(public payload: Ingredient) {}
 }
+
+export class AddIngredients implements Action {
+    readonly type = ADD_INGREDIENTS;
+    constructor(public payload: Ingredient[]){}
+}
+
+
+export type ShoppingListActions = AddIngredient | AddIngredients;

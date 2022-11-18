@@ -1,3 +1,4 @@
+import { Action } from "@ngrx/store";
 import { Ingredient } from "../../shared/ingredient.model";
 import * as ShoppingListActions from "./shopping-list.actions";
 
@@ -9,15 +10,22 @@ const initialState = {
       ]
 }
 
-export function shoppingListReducer (state= initialState, action: ShoppingListActions.AddIngredient) {
+export function shoppingListReducer (state= initialState, action: ShoppingListActions.ShoppingListActions) {
     switch(action.type) {
         case ShoppingListActions.ADD_INGREDIENT:
             // state.ingredients.push() is bad practice because state changes with ngrx always have to be immutable, which means you must not edit the existing or previous state
             // instead return a new object which will replace the old state, to not loose the old data, copy the old state with the spread operator
             return {
-                ...state,   // best practice to copy the old state to prevent from losing the untouched old properties. 
+                ...state,   // best practice to copy the old state to prevent from losing the untouched old properties
                 ingredients: [...state.ingredients, action.payload]
             };
+
+        case ShoppingListActions.ADD_INGREDIENTS:
+            return {
+                ...state,
+                ingredients: [...state.ingredients, ...action.payload]   //because the payload type of ADD_INGREDIENTS is an array, so we use spread operator to add the elements to advoid a nested array
+            };
+
         default:
             return state;
     }
