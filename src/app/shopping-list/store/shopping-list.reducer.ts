@@ -26,6 +26,33 @@ export function shoppingListReducer (state= initialState, action: ShoppingListAc
                 ingredients: [...state.ingredients, ...action.payload]   //because the payload type of ADD_INGREDIENTS is an array, so we use spread operator to add the elements to advoid a nested array
             };
 
+        case ShoppingListActions.UPDATE_INGREDIENT:
+            // get the ingredient we want to edit
+            const ingredient = state.ingredients[action.payload.index];
+            // data here is immutable, so we create a copy
+            // using spread operator to copy the old ingredient, then to overwrite the old ingredient using new ingredient from action payload
+            const updatedIngredient = {
+                ...ingredient, 
+                ...action.payload.ingredient
+            }
+            const updatedIngredients = [...state.ingredients];
+            updatedIngredients[action.payload.index] = updatedIngredient;
+
+            return {
+                ...state,
+                ingredients: updatedIngredients
+            };
+        
+        case ShoppingListActions.DELETE_INGREDIENT:
+
+            return {
+                ...state,
+                // filter will always return a new array, if the function passed into filter returns true, then the function returns a new array consisting of those elements that satisfy the boolean function (the function returns false, so the deleted ingredient will be filtered out)
+                ingredients: state.ingredients.filter((ig, igIndex) => {
+                    return igIndex !== action.payload;
+                })  
+            };
+
         default:
             return state;
     }
