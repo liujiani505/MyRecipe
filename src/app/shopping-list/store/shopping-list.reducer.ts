@@ -2,15 +2,30 @@ import { Action } from "@ngrx/store";
 import { Ingredient } from "../../shared/ingredient.model";
 import * as ShoppingListActions from "./shopping-list.actions";
 
+
+// to describe application wide state, not just the state of this reducer
+export interface AppState {
+    shoppingList: State;
+}
+
+
+export interface State {
+    ingredients: Ingredient[];
+    editedIngredient: Ingredient;
+    editedIngredientIndex: number;
+}
+
 // we're in a javascript object, we assign values with colon
-const initialState = {
+const initialState: State = {
     ingredients: [
         new Ingredient('Apples', 5),
         new Ingredient('Tomatoes', 10),
-      ]
+    ],
+    editedIngredient: null,
+    editedIngredientIndex: -1
 }
 
-export function shoppingListReducer (state= initialState, action: ShoppingListActions.ShoppingListActions) {
+export function shoppingListReducer (state: State = initialState, action: ShoppingListActions.ShoppingListActions) {
     switch(action.type) {
         case ShoppingListActions.ADD_INGREDIENT:
             // state.ingredients.push() is bad practice because state changes with ngrx always have to be immutable, which means you must not edit the existing or previous state
