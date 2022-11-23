@@ -6,6 +6,8 @@ export const ADD_INGREDIENT = 'ADD_INGREDIENT';
 export const ADD_INGREDIENTS = 'ADD_INGREDIENTS';
 export const UPDATE_INGREDIENT = 'UPDATE_INGREDIENT';
 export const DELETE_INGREDIENT = 'DELETE_INGREDIENT';
+export const START_EDIT = 'START_EDIT';
+export const STOP_EDIT = 'STOP_EDIT';
 
 
 // Action is an interface
@@ -31,5 +33,14 @@ export class DeleteIngredient implements Action {
     constructor(public payload: number){}  // payload is the index
 }
 
+export class StartEdit implements Action {
+    readonly type = START_EDIT;
+    constructor(public payload: number){}
+}
 
-export type ShoppingListActions = AddIngredient | AddIngredients | UpdateIngredient | DeleteIngredient;   // union type to be used in shopping-list reducer
+export class StopEdit implements Action {
+    readonly type = STOP_EDIT;
+}
+
+
+export type ShoppingListActions = AddIngredient | AddIngredients | UpdateIngredient | DeleteIngredient | StartEdit | StopEdit;   // union type to be used in shopping-list reducer

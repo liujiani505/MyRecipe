@@ -68,6 +68,20 @@ export function shoppingListReducer (state: State = initialState, action: Shoppi
                 })  
             };
 
+        case ShoppingListActions.START_EDIT:
+            return {
+                ...state,
+                editedIngredientIndex: action.payload,
+                editedIngredient: {...state.ingredients[action.payload]}
+            };
+        
+        case ShoppingListActions.STOP_EDIT:
+            return {
+                ...state,
+                editedIngredientIndex: -1,
+                editedIngredient: null,
+            };
+
         default:
             return state;
     }
