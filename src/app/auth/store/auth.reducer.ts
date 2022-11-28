@@ -14,6 +14,7 @@ export function authReducer(state = initialState, action: AuthActions.AuthAction
         case AuthActions.LOGIN:
             const user = new User(action.payload.email, action.payload.userId, action.payload.token, action.payload.expirationDate);
             return {
+                // it's important to always copy the old state
                 ...state,
                 user: user
             }
@@ -22,6 +23,7 @@ export function authReducer(state = initialState, action: AuthActions.AuthAction
                 ...state,
                 user: null
             }
+        // default is important for initializing the state. When ngrx starts up, it sends one initial action to all reducers, since this action has an identifier we don't handle anywhere here, so we make it into the default case, therefore, we return the state, and since we have no prior state when this first action is emitted, we therefore take the initial state.
         default:
             return state;
     }

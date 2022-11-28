@@ -118,6 +118,7 @@ export class AuthService {
             );
             // use the user subject to next the user, to emit the constructed user as our curently logged in user
             // this.userSubject.next(user);
+            // any actions you dispath always reaches all reducers, not just the auth reducer in this case
             this.store.dispatch(new AuthActions.Login({email: email, userId: userId, token: token, expirationDate: expirationDate}))
             this.autoLogout(expiresIn * 1000)
             // to store the user object as string in local storage for auto login when refresh the page
