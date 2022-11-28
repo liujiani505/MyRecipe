@@ -43,19 +43,21 @@ export function shoppingListReducer (state: State = initialState, action: Shoppi
 
         case ShoppingListActions.UPDATE_INGREDIENT:
             // get the ingredient we want to edit
-            const ingredient = state.ingredients[action.payload.index];
+            const ingredient = state.ingredients[state.editedIngredientIndex];
             // data here is immutable, so we create a copy
             // using spread operator to copy the old ingredient, then to overwrite the old ingredient using new ingredient from action payload
             const updatedIngredient = {
                 ...ingredient, 
-                ...action.payload.ingredient
+                ...action.payload
             }
             const updatedIngredients = [...state.ingredients];
-            updatedIngredients[action.payload.index] = updatedIngredient;
+            updatedIngredients[state.editedIngredientIndex] = updatedIngredient;
 
             return {
                 ...state,
-                ingredients: updatedIngredients
+                ingredients: updatedIngredients,
+                editedIngredientIndex: -1,
+                editedIngredient: null
             };
         
         case ShoppingListActions.DELETE_INGREDIENT:
@@ -64,8 +66,10 @@ export function shoppingListReducer (state: State = initialState, action: Shoppi
                 ...state,
                 // filter will always return a new array, if the function passed into filter returns true, then the function returns a new array consisting of those elements that satisfy the boolean function (the function returns false, so the deleted ingredient will be filtered out)
                 ingredients: state.ingredients.filter((ig, igIndex) => {
-                    return igIndex !== action.payload;
-                })  
+                    return igIndex !== state.editedIngredientIndex;
+                }), 
+                editedIngredientIndex: -1,
+                editedIngredient: null
             };
 
         case ShoppingListActions.START_EDIT:
