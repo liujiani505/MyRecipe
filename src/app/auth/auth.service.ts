@@ -28,7 +28,7 @@ export class AuthService {
     // this will inform all place in the application about when our user changes. It will always change when the authentication state changes, even if the token expires the user subject a new value which is null, it tells that the user is invalid
     // userSubject = new Subject<User>(); 
 
-    userSubject = new BehaviorSubject<User>(null);
+    // userSubject = new BehaviorSubject<User>(null);
     // The difference of BehaviorSubject is that it gives subscribers immediate access to the perviously emitted value even if they haven't subscribed at the point of time that value was emitted. That means we can get access to the currently activated user even if we only subscribe after that user has been emitted. So when we need token to fetch data, even the user logged in before that point of time, we still get the access to the latest user.
 
     private tokenExpirationTimer: any;
