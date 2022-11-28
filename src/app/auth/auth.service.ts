@@ -35,6 +35,10 @@ export class AuthService {
 
     constructor(private http: HttpClient, private router: Router, private store: Store<fromApp.AppState>){}
 
+
+    // SIDE EFFECTS
+    // side effectes are parts in your code where you run some logic that's not so important for the immediate update of the current state, for example, the http request in signup below, same for local storage. There is a seperate package maintained by ngrx team that helps up dealing with such side effects while still staying in this ngrx world.
+
     signup(email:string, password: string){
         return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + environment.firebaseAIPKey, 
         { 
