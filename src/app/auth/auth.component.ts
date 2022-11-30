@@ -7,6 +7,9 @@ import { AuthResponseData } from './auth.service';
 import { AlertComponent } from '../shared/alert/alert.component';
 import { PlaceholderDirective } from '../shared/placeholder/placeholder.directive';
 import { IfStmt } from '@angular/compiler';
+import { Store } from '@ngrx/store';
+import * as fromApp from '../store/app.reducer';
+import * as AuthActions from './store/auth.actions';
 
 
 @Component({
@@ -17,9 +20,12 @@ import { IfStmt } from '@angular/compiler';
 
 export class AuthComponent implements OnDestroy {
 
-    constructor(private authService: AuthService, private router: Router, private componentFactoryResolver: ComponentFactoryResolver){
-    
-    }
+    constructor(
+        private authService: AuthService, 
+        private router: Router, 
+        private componentFactoryResolver: ComponentFactoryResolver,
+        private store: Store<fromApp.AppState>,
+        ){}
 
     isLoginMode = true;
     isLoading = false;
@@ -45,7 +51,8 @@ export class AuthComponent implements OnDestroy {
         let authObs: Observable<AuthResponseData>;
 
         if(this.isLoginMode){
-            authObs = this.authService.login(email, password)   
+            // authObs = this.authService.login(email, password) 
+            this.store.dispatch(new AuthActions.LoginStart({email: email, password: password})) ; 
 
         } else {
             authObs = this.authService.signup(email, password)
