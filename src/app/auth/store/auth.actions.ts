@@ -4,6 +4,7 @@ import { Action } from '@ngrx/store'
 // these identifiers reach the entire application, so the names of the values we store in the consts below should be unique, especially for larger apps
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
+export const LOGIN_START = 'LOGIN_START';
 
 // actions are objects based on class
 export class Login implements Action {
