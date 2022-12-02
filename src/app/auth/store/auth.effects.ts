@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { catchError, switchMap, map } from 'rxjs/operators';
+import { catchError, switchMap, map, tap } from 'rxjs/operators';
 import * as AuthActions from './auth.actions';
 import { environment } from 'src/environments/environment';
 import { of } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 
 
@@ -43,15 +44,39 @@ export class AuthEffects {
                 map( resData => {
                     const expirationDate = new Date(new Date().getTime() + +resData.expiresIn * 1000);  
                     // effect needs to dispatch a new action once it's done, so we should return a new action down below. But we don't need to call dispatch because, it's done by @Effect(), the entire chain of results above (this.actions$.pipe()) will be automatically treated as an action by ngrx effects. Therefore will be dispatched. So here below, we just need to retun an action object, and ngrx effects will automatically dispatch for you.
-                    return of(new AuthActions.Login({email:resData.email, userId:resData.localId, token: resData.idToken, expirationDate: expirationDate}));
+
+                    // map automatically returns what's returned into an observable
+                    return new AuthActions.Login({email:resData.email, userId:resData.localId, token: resData.idToken, expirationDate: expirationDate});
                 }),  
-                catchError(error => {
+                catchError(errorRes => {
+                    let errorMessage = 'An unknown error occurred';
+                    if (!errorRes.error || !errorRes.error.error){
+                        return of(new AuthActions.LoginFail(errorMessage))
+                    }
+                    switch(errorRes.error.error.message){
+                        case 'EMAIL_EXISTS':
+                            errorMessage = 'This email exists already'; 
+                            break; 
+                        case 'EMAIL_NOT_FOUND':
+                            errorMessage = 'There is no user record corresponding to this identifier.';
+                            break;
+                    }
                 // we have to return a non-error observable so that our overall stream doesn't die. of() is from rxjs, which is a utility function for returning new obeservable
-                return of();
+                return of(new AuthActions.LoginFail(errorMessage));
             }), );
         }),
     );
 
+    // this is for redirecting, which could be seen as a side effect
+    @Effect({dispatch: false}) // this is to let ngrx know that this effect will not dispatch a dispatchable action in the end
+    authSuccess= this.actions$.pipe(
+        ofType(AuthActions.LOGIN), //The LOGIN action only fires on a successful login
+        tap(() => {
+            this.router.navigate(['/'])
+        })
+    )
+
+
     // Actions is one big obervable that will give you access to all dispatched actions, so you can react to them
-    constructor(private actions$: Actions, private http: HttpClient){}
+    constructor(private actions$: Actions, private http: HttpClient, private router: Router){}
 }

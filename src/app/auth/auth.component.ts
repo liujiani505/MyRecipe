@@ -31,6 +31,9 @@ export class AuthComponent implements OnInit, OnDestroy {
             // because authState always has the latest loading state
             this.isLoading = authState.loading;
             this.error = authState.authError;
+            if(this.error){
+                this.showErrorAlert(this.error)
+            }
         })
     }
 
