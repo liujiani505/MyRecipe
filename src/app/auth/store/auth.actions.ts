@@ -35,7 +35,7 @@ export class LoginStart implements Action {
 
 export class LoginFail implements Action {
     readonly type = LOGIN_FAIL;
-    constructor(public payload: string){}
+    constructor(public payload: string){} //we want to add error message, payload here is the error message
 }
 
 export type AuthActions = Login | Logout | LoginStart | LoginFail;

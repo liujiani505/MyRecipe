@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnDestroy, ViewChild, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
@@ -17,7 +17,7 @@ import * as AuthActions from './store/auth.actions';
 })
 
 
-export class AuthComponent implements OnDestroy {
+export class AuthComponent implements OnInit, OnDestroy {
 
     constructor(
         private authService: AuthService, 
@@ -25,6 +25,14 @@ export class AuthComponent implements OnDestroy {
         private componentFactoryResolver: ComponentFactoryResolver,
         private store: Store<fromApp.AppState>,
         ){}
+
+    ngOnInit(): void {
+        this.store.select('auth').subscribe(authState => {
+            // because authState always has the latest loading state
+            this.isLoading = authState.loading;
+            this.error = authState.authError;
+        })
+    }
 
     isLoginMode = true;
     isLoading = false;
@@ -52,7 +60,7 @@ export class AuthComponent implements OnDestroy {
         if(this.isLoginMode){
             // authObs = this.authService.login(email, password) 
 
-            // dispatch does not return an observable, which means I can't store this in authObs. This also means we're not notified about when it's done. 
+            // dispatch here does not return an observable, which means I can't store this in authObs. This also means we're not notified about when it's done. Instead we can select 'auth' and subscribe to the authreducer in ngOnInit
             this.store.dispatch(new AuthActions.LoginStart({email: email, password: password})) ; 
 
         } else {
@@ -71,10 +79,6 @@ export class AuthComponent implements OnDestroy {
         //         this.isLoading = false;
         //     }
         // );
-
-        this.store.select('auth').subscribe(authState => {
-            
-        })
 
         form.reset();
     }

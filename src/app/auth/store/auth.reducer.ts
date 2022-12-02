@@ -4,11 +4,13 @@ import * as AuthActions from "./auth.actions";
 export interface State {
     user: User;
     authError: string;
+    loading: boolean;
 }
  
 const initialState: State = {
     user: null,
-    authError: null
+    authError: null,
+    loading: false,
 }
 
 export function authReducer(state = initialState, action: AuthActions.AuthActions) {
@@ -19,7 +21,8 @@ export function authReducer(state = initialState, action: AuthActions.AuthAction
                 // it's important to always copy the old state
                 ...state,
                 authError: null,
-                user: user
+                user: user,
+                loading: false,
             }
         case AuthActions.LOGOUT:
             return {
@@ -31,12 +34,14 @@ export function authReducer(state = initialState, action: AuthActions.AuthAction
             return {
                ...state,
                authError: null,
+               loading: true,
             }
         case AuthActions.LOGIN_FAIL:
             return{
                 ...state,
                 user: null,
-                authError: action.payload
+                authError: action.payload,
+                loading: false,
             }
         // default is important for initializing the state. When ngrx starts up, it sends one initial action to all reducers, since this action has an identifier we don't handle anywhere here, so we make it into the default case, therefore, we return the state, and since we have no prior state when this first action is emitted, we therefore take the initial state.
         default:
