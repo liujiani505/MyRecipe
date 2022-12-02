@@ -18,7 +18,7 @@ export interface AuthResponseData{
     registered?: boolean;
 }
 
-@Injectable()
+@Injectable() //for wiring our auth effects up. things can be injected into AuthEffects class
 
 export class AuthEffects {
     @Effect()
@@ -42,6 +42,7 @@ export class AuthEffects {
             .pipe(
                 map( resData => {
                     const expirationDate = new Date(new Date().getTime() + +resData.expiresIn * 1000);  
+                    // effect needs to dispatch a new action once it's done, so we should return a new action down below. But we don't need to call dispatch because, it's done by @Effect(), the entire chain of results above (this.actions$.pipe()) will be automatically treated as an action by ngrx effects. Therefore will be dispatched. So here below, we just need to retun an action object, and ngrx effects will automatically dispatch for you.
                     return of(new AuthActions.Login({email:resData.email, userId:resData.localId, token: resData.idToken, expirationDate: expirationDate}));
                 }),  
                 catchError(error => {
