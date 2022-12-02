@@ -5,6 +5,7 @@ import { Action } from '@ngrx/store'
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const LOGIN_START = 'LOGIN_START';
+export const LOGIN_FAIL = 'LOGIN_FAIL';
 
 // actions are objects based on class
 export class Login implements Action {
@@ -32,4 +33,9 @@ export class LoginStart implements Action {
     ){}
 }
 
-export type AuthActions = Login | Logout;
+export class LoginFail implements Action {
+    readonly type = LOGIN_FAIL;
+    constructor(public payload: string){}
+}
+
+export type AuthActions = Login | Logout | LoginStart | LoginFail;

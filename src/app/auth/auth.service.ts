@@ -60,6 +60,7 @@ export class AuthService {
             password: password, 
             returnSecureToken: true
         })
+        // observable completes whenever an error is thrown. So whenever the code above yields an error, catchError kicks in, the code below catchError never gets excuated
         .pipe(catchError(this.handleError), tap(resData => {
             this.handleAuthentication(resData.email, resData.idToken, resData.localId, +resData.expiresIn); // + to convert expiresIn to a number
         }))
