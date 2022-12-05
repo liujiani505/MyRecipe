@@ -109,7 +109,7 @@ export class AuthEffects {
             //     return of(new AuthActions.AuthenticateFail(errorMessage));
             //     }), 
             // );
-            
+
             .pipe( 
                 map(resData => {
                     return handleAuthentication(+resData.expiresIn, resData.email, resData.localId, resData.idToken)
@@ -124,8 +124,8 @@ export class AuthEffects {
 
     // this is for redirecting, which could be seen as a side effect
     @Effect({dispatch: false}) // this is to let ngrx know that this effect will not dispatch a dispatchable action in the end
-    authSuccess= this.actions$.pipe(
-        ofType(AuthActions.AUTHENTICATE_SUCCESS), //The LOGIN action only fires on a successful login
+    authRedirect= this.actions$.pipe(
+        ofType(AuthActions.AUTHENTICATE_SUCCESS, AuthActions.LOGOUT), //The LOGIN action only fires on a successful login
         tap(() => {
             this.router.navigate(['/'])
         })
