@@ -2,14 +2,16 @@ import { Action } from '@ngrx/store'
 
 // first create identifiers for these actions
 // these identifiers reach the entire application, so the names of the values we store in the consts below should be unique, especially for larger apps
-export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const LOGIN_START = 'LOGIN_START';
-export const LOGIN_FAIL = 'LOGIN_FAIL';
+export const AUTHENTICATE_SUCCESS = 'AUTHENTICATE_SUCCESS';
+export const AUTHENTICATE_FAIL = 'AUTHENTICATE_FAIL';
+export const SIGNUP_START = 'SIGNUP_START';
+
 
 // actions are objects based on class
-export class Login implements Action {
-    readonly type = LOGIN;
+export class AuthenticateSuccess implements Action {
+    readonly type = AUTHENTICATE_SUCCESS;
     constructor(
         public payload: {
             email: string;
@@ -33,9 +35,19 @@ export class LoginStart implements Action {
     ){}
 }
 
-export class LoginFail implements Action {
-    readonly type = LOGIN_FAIL;
+export class AuthenticateFail implements Action {
+    readonly type = AUTHENTICATE_FAIL;
     constructor(public payload: string){} //we want to add error message, payload here is the error message
 }
 
-export type AuthActions = Login | Logout | LoginStart | LoginFail;
+export class SignupStart implements Action {
+    readonly type = SIGNUP_START;
+    constructor(public payload:{
+        email: string;
+        password: string;
+    } 
+    ){}
+}
+
+
+export type AuthActions = AuthenticateSuccess | Logout | LoginStart | AuthenticateFail | SignupStart;

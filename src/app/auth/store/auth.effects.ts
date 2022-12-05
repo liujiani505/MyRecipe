@@ -22,6 +22,12 @@ export interface AuthResponseData{
 @Injectable() //for wiring our auth effects up. things can be injected into AuthEffects class
 
 export class AuthEffects {
+
+    @Effect()
+    authSignup = this.actions$.pipe(
+        ofType(AuthActions.SIGNUP_START),
+    )
+
     @Effect()
     // register first effect as a normal property in AuthEffects class. we don't need to subscribe to the aticons observable because ngrx will subscribe for you 
     authLogin = this.actions$.pipe(
@@ -46,12 +52,12 @@ export class AuthEffects {
                     // effect needs to dispatch a new action once it's done, so we should return a new action down below. But we don't need to call dispatch because, it's done by @Effect(), the entire chain of results above (this.actions$.pipe()) will be automatically treated as an action by ngrx effects. Therefore will be dispatched. So here below, we just need to retun an action object, and ngrx effects will automatically dispatch for you.
 
                     // map automatically returns what's returned into an observable
-                    return new AuthActions.Login({email:resData.email, userId:resData.localId, token: resData.idToken, expirationDate: expirationDate});
+                    return new AuthActions.AuthenticateSuccess({email:resData.email, userId:resData.localId, token: resData.idToken, expirationDate: expirationDate});
                 }),  
                 catchError(errorRes => {
                     let errorMessage = 'An unknown error occurred';
                     if (!errorRes.error || !errorRes.error.error){
-                        return of(new AuthActions.LoginFail(errorMessage))
+                        return of(new AuthActions.AuthenticateFail(errorMessage))
                     }
                     switch(errorRes.error.error.message){
                         case 'EMAIL_EXISTS':
@@ -62,7 +68,7 @@ export class AuthEffects {
                             break;
                     }
                 // we have to return a non-error observable so that our overall stream doesn't die. of() is from rxjs, which is a utility function for returning new obeservable
-                return of(new AuthActions.LoginFail(errorMessage));
+                return of(new AuthActions.AuthenticateFail(errorMessage));
             }), );
         }),
     );
@@ -70,7 +76,7 @@ export class AuthEffects {
     // this is for redirecting, which could be seen as a side effect
     @Effect({dispatch: false}) // this is to let ngrx know that this effect will not dispatch a dispatchable action in the end
     authSuccess= this.actions$.pipe(
-        ofType(AuthActions.LOGIN), //The LOGIN action only fires on a successful login
+        ofType(AuthActions.AUTHENTICATE_SUCCESS), //The LOGIN action only fires on a successful login
         tap(() => {
             this.router.navigate(['/'])
         })
