@@ -20,7 +20,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   constructor(private router: Router, private route: ActivatedRoute, private store: Store<fromApp.AppState>) { }
 
   ngOnInit(){
-   this.subscription = this.store.select('recipes')
+   this.subscription = this.store.select('recipes')  // with ngrx we use select to get data and it always return an obeservable, so we need to use pipe to transform recipesState object to recipes array.
    .pipe(map(recipesState => recipesState.recipes)) 
     .subscribe(
       (recipes: Recipe[])=>{
